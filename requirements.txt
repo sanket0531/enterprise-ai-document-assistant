@@ -1,0 +1,11 @@
+pip install fastapi
+pip install uvicorn
+pip install sqlalchemy
+pip install psycopg[binary]
+pip install alembic
+pip install pydantic
+pip install pydantic-settings
+pip install python-dotenv
+pip install python-multipart
+pip install python-jose[cryptography]
+pip install passlib[bcrypt]
