@@ -1,19 +1,20 @@
 from functools import lru_cache
+from urllib.parse import quote_plus
 
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """
-    Application configuration loaded from environment variables.
-    """
-
     app_name: str
     app_version: str
-
     debug: bool
 
-    database_url: str
+    db_server: str
+    db_name: str
+    db_driver: str
+    db_trusted_connection: str
+    db_trust_server_certificate: str
 
     secret_key: str
     algorithm: str
@@ -25,14 +26,21 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
+    @computed_field
+    @property
+    def database_url(self) -> str:
+        driver = quote_plus(self.db_driver)
+
+        return (
+            f"mssql+pyodbc://@{self.db_server}/{self.db_name}"
+            f"?driver={driver}"
+            f"&trusted_connection={self.db_trusted_connection}"
+            f"&TrustServerCertificate={self.db_trust_server_certificate}"
+        )
+
 
 @lru_cache
 def get_settings() -> Settings:
-    """
-    Return a cached Settings instance.
-
-    The configuration is loaded only once during the application's lifetime.
-    """
     return Settings()
 
 
