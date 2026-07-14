@@ -18,3 +18,11 @@ class DocumentResponse(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class DocumentUploadResponse(BaseModel):
+    message: str
+    document: DocumentResponse
+
+
+class DocumentListResponse(BaseModel):
+    documents: list[DocumentResponse]    

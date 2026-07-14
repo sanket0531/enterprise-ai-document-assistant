@@ -27,12 +27,6 @@ class DocumentRepository:
             .first()
         )
 
-    def get_all(self) -> list[Document]:
-        return (
-            self.db.query(Document)
-            .order_by(Document.created_at.desc())
-            .all()
-        )
 
     def delete(self, document: Document) -> None:
         self.db.delete(document)

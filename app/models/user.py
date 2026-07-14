@@ -1,11 +1,14 @@
 from datetime import datetime
 from enum import Enum
+from xml.dom.minidom import Document
 
 from sqlalchemy import Boolean, DateTime, Enum as SQLEnum, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
 from sqlalchemy.orm import relationship
+from typing import List
+
 
 class UserRole(str, Enum):
     ADMIN = "ADMIN"
@@ -69,8 +72,7 @@ class User(Base):
         nullable=False
     )
 
-    documents = relationship(
-        "Document",
+    documents: Mapped[List["Document"]] = relationship(
         back_populates="uploader",
         cascade="all, delete-orphan",
     )
