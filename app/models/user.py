@@ -5,7 +5,7 @@ from sqlalchemy import Boolean, DateTime, Enum as SQLEnum, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
-
+from sqlalchemy.orm import relationship
 
 class UserRole(str, Enum):
     ADMIN = "ADMIN"
@@ -67,4 +67,10 @@ class User(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
         nullable=False
+    )
+
+    documents = relationship(
+        "Document",
+        back_populates="uploader",
+        cascade="all, delete-orphan",
     )

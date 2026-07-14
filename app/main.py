@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.logger import configure_logging, get_logger
 from app.api import auth
+from app.routers import documents
 
 configure_logging()
 
@@ -26,6 +27,11 @@ logger.info("Application started successfully.")
 
 app.include_router(
     auth.router,
+    prefix="/api/v1"
+)
+
+app.include_router(
+    documents.router,
     prefix="/api/v1"
 )
 
