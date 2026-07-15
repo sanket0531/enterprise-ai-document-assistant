@@ -1,12 +1,14 @@
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
+from app.core.logger import get_logger
 from app.models.document import Document
 from app.repositories.document_repository import DocumentRepository
+from app.services.extraction_service import ExtractionService
 from app.utils.file_storage import FileStorage
 from app.utils.file_validator import FileValidator
 
-
+logger = get_logger(__name__)
 class DocumentService:
     def __init__(self, db: Session):
         self.repository = DocumentRepository(db)
@@ -21,6 +23,16 @@ class DocumentService:
 
         # Save file to disk
         filename, file_path = await FileStorage.save(file)
+
+        # Extract document text
+        extracted_text = ExtractionService.extract_text(file_path)
+
+
+        logger.info(
+            "Successfully extracted %d characters from %s",
+            len(extracted_text),
+            filename,
+        )
 
         # Create document model
         document = Document(
