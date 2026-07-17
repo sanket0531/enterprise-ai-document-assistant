@@ -1,5 +1,3 @@
-from email.mime import text
-
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
@@ -10,6 +8,7 @@ from app.services.extraction_service import ExtractionService
 from app.utils.file_storage import FileStorage
 from app.utils.file_validator import FileValidator
 from app.services.chunk_service import ChunkService
+from app.services.embedding_service import EmbeddingService
 
 logger = get_logger(__name__)
 
@@ -41,6 +40,8 @@ class DocumentService:
 
         # Create chunks
         chunks = self.chunk_service.create_chunks(extracted_text)
+
+        embeddings = EmbeddingService.generate_embeddings(chunks)
 
         # Create document model
         document = Document(

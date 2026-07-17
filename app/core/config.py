@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
 
+    embedding_model: str
+
+    # ChromaDB
+    chroma_db_path: str
+    chroma_collection_name: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
