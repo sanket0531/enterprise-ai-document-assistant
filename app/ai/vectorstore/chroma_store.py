@@ -1,4 +1,5 @@
 from typing import Any
+from uuid import UUID
 
 from chromadb.api.models.Collection import Collection
 
@@ -16,38 +17,71 @@ class ChromaStore:
     def __init__(self) -> None:
         self._collection: Collection = chroma_config.collection
 
-    def add(
+    def add_embeddings(
         self,
-        ids: list[str],
-        documents: list[str],
+        document_id: UUID,
+        chunks: list[str],
         embeddings: list[list[float]],
-        metadatas: list[dict[str, Any]],
+        metadata: list[dict[str, Any]],
     ) -> None:
         """
-        Store vectors in ChromaDB.
+        Store document embeddings in ChromaDB.
         """
+
+        ids = [
+            f"{document_id}_{index}"
+            for index in range(len(chunks))
+        ]
+
         self._collection.add(
             ids=ids,
-            documents=documents,
+            documents=chunks,
             embeddings=embeddings,
-            metadatas=metadatas,
+            metadatas=metadata,
         )
 
-    def delete(
+    def search(
         self,
-        ids: list[str],
+        embedding: list[float],
+        top_k: int = 5,
+    ):
+        """
+        Search similar chunks.
+        """
+
+        return self._collection.query(
+            query_embeddings=[embedding],
+            n_results=top_k,
+        )
+
+    def delete_document(
+        self,
+        document_id: UUID,
     ) -> None:
         """
-        Delete vectors by IDs.
+        Delete all vectors belonging to a document.
         """
-        self._collection.delete(ids=ids)
+
+        self._collection.delete(
+            where={
+                "document_id": str(document_id)
+            }
+        )
 
     def count(self) -> int:
         """
-        Return total vectors stored.
+        Return total stored vectors.
         """
+
         return self._collection.count()
 
+    def peek(self):
+        """
+        Return sample records from the collection.
+        """
 
-# Singleton instance
+        return self._collection.peek()
+
+
+# Singleton
 chroma_store = ChromaStore()
