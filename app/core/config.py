@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int
 
     embedding_model: str
+    
+    # Hugging Face LLM
+    llm_model: str
+    llm_max_new_tokens: int
+    llm_temperature: float
+    llm_top_p: float
+    llm_do_sample: bool
 
     # ChromaDB
     chroma_db_path: str

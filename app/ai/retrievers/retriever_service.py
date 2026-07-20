@@ -25,7 +25,7 @@ class RetrieverService:
         query: str,
         top_k: int = 5,
         where: dict[str, Any] | None = None,
-    ):
+    ) -> dict[str, Any]:
         """
         Retrieve the most relevant document chunks.
         """
