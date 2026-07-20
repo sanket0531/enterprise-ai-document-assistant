@@ -40,10 +40,13 @@ class ChromaStore:
             metadatas=metadata,
         )
 
+
+
     def search(
         self,
         embedding: list[float],
         top_k: int = 5,
+        where: dict[str, Any] | None = None,
     ):
         """
         Search similar chunks.
@@ -52,6 +55,7 @@ class ChromaStore:
         return self._collection.query(
             query_embeddings=[embedding],
             n_results=top_k,
+            where=where,
         )
 
     def delete_document(

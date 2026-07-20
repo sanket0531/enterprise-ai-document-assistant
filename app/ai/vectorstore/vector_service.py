@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from typing import Any
 from app.core.logger import get_logger
 from app.ai.vectorstore.chroma_store import ChromaStore
 
@@ -46,18 +47,22 @@ class VectorService:
             document_id,
         )
 
+
+
     def search_similar_chunks(
         self,
         embedding: list[float],
         top_k: int = 5,
+        where: dict[str, Any] | None = None,
     ):
         """
-        Search for similar chunks.
+        Search similar chunks.
         """
 
         return self._store.search(
             embedding=embedding,
             top_k=top_k,
+            where=where,
         )
 
     def delete_document_vectors(
@@ -81,3 +86,4 @@ class VectorService:
         """
 
         return self._store.count()
+

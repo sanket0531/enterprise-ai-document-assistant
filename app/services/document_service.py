@@ -38,19 +38,13 @@ class DocumentService:
         and index the document into ChromaDB.
         """
 
-        # ---------------------------------------------------------
         # Validate uploaded file
-        # ---------------------------------------------------------
         await FileValidator.validate(file)
 
-        # ---------------------------------------------------------
         # Save file
-        # ---------------------------------------------------------
         filename, file_path = await FileStorage.save(file)
 
-        # ---------------------------------------------------------
         # Extract text
-        # ---------------------------------------------------------
         extracted_text = self.extraction_service.extract_text(file_path)
 
         logger.info(
@@ -59,9 +53,7 @@ class DocumentService:
             filename,
         )
 
-        # ---------------------------------------------------------
         # Create document metadata
-        # ---------------------------------------------------------
         file_extension = (
             file.filename.rsplit(".", 1)[-1].lower()
             if "." in file.filename
@@ -78,10 +70,8 @@ class DocumentService:
             uploaded_by=uploaded_by,
         )
 
-        # ---------------------------------------------------------
         # Save metadata into MSSQL
         # document.id becomes available here
-        # ---------------------------------------------------------
         document = self.repository.create(document)
 
         logger.info(
@@ -89,9 +79,7 @@ class DocumentService:
             document.id,
         )
 
-        # ---------------------------------------------------------
         # Create chunks
-        # ---------------------------------------------------------
         chunks = self.chunk_service.create_chunks(extracted_text)
 
         logger.info(
@@ -99,9 +87,7 @@ class DocumentService:
             len(chunks),
         )
 
-        # ---------------------------------------------------------
         # Generate embeddings
-        # ---------------------------------------------------------
         embeddings = self.embedding_service.generate_embeddings(chunks)
 
         logger.info(
@@ -109,17 +95,13 @@ class DocumentService:
             len(embeddings),
         )
 
-        # ---------------------------------------------------------
         # Build metadata for every chunk
-        # ---------------------------------------------------------
         metadata = self._build_metadata(
             document=document,
             chunks=chunks,
         )
 
-        # ---------------------------------------------------------
         # Store vectors into ChromaDB
-        # ---------------------------------------------------------
         try:
             self.vector_service.store_document_vectors(
                 document_id=document.id,

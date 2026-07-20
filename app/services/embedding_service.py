@@ -12,47 +12,38 @@ class EmbeddingService:
     Service responsible for generating embeddings
     for document chunks.
     """
-
     @staticmethod
-    def generate_embeddings(
-        chunks: list[str],
-    ) -> list[list[float]]:
+    def generate_embedding(
+        text: str,
+    ) -> list[float]:
         """
-        Generate embeddings for document chunks.
+        Generate an embedding for a single text.
 
         Args:
-            chunks: List of text chunks.
+            text: Input text.
 
         Returns:
-            List of embedding vectors.
+            Embedding vector.
         """
 
-        if not chunks:
-            logger.warning("No chunks provided for embedding generation.")
+        if not text.strip():
+            logger.warning("Empty text provided for embedding generation.")
             return []
 
-        logger.info(
-            "Generating embeddings for %d chunks.",
-            len(chunks),
-        )
+        logger.info("Generating embedding for query.")
 
         try:
-            embeddings = EmbeddingUtility.generate_embeddings(
-                chunks
-            )
+            embedding = EmbeddingUtility.generate_embeddings([text])[0]
 
-            logger.info(
-                "Successfully generated %d embeddings.",
-                len(embeddings),
-            )
+            logger.info("Successfully generated query embedding.")
 
-            return embeddings
+            return embedding
 
         except Exception as exc:
             logger.exception(
-                "Embedding generation failed."
+                "Query embedding generation failed."
             )
 
             raise EmbeddingGenerationException(
-                "Failed to generate embeddings."
+                "Failed to generate query embedding."
             ) from exc
